@@ -8,7 +8,7 @@
 # If you don't care about account keys, and given that you are running only 1
 # process and 1 thread, you can use an in-memory database by setting it to
 # "sqlite:///:memory:".
-database = sqlite:////etc/serles/db.sqlite
+database = ${ACME_DB}
 # Mariadb is also supported, but you will need to install pymysql from pypi.
 #database = mysql+pymysql://user:passwd@localhost/db_acmeproxy
 
@@ -44,53 +44,25 @@ forceTemplateDN = true
 # Config for EJBCA the backend. This one is recommended to use in production.
 [ejbca]
 # URL of the API endpoint (must be served over TLS):
-apiUrl = https://localhost:9443/ejbca/ejbcaws/ejbcaws?wsdl
+apiUrl = ${EJBCA_URL}
 
 # the path to a custom CA bundle to verify the API's certificate, the constants
 # 'default' (built-in certifi bundle) or 'none' (disable verification):
-caBundle = none
+caBundle = ${CA_BUNDLE}
 
 # client certificate of the EJBCA-user with permission to issue certificates.
 # This is expected to be a concatenation of both public and private key in PEM
 # format:
-clientCertificate = /etc/serles/client01-privpub.pem
+clientCertificate = ${CLIENT_CERT}
 
 # name of the Certificate Authority, End Entity Profile and Certificate Profile
 # for to-be-generated certs:
-caName = ACMECA
-endEntityProfileName = ACMEEndEntityProfile
-certificateProfileName = ACMEServerProfile
+caName = ${CA_NAME}
+endEntityProfileName = ${CA_ENDENTITYPROFILE}
+certificateProfileName = ${CA_CERTIFICATEPROFILE}
 
 # Username and Enrollment Code for the End Entity. available parameters are
 # {random} (32 chars of [0-9a-f]) and those from the certificate's DN.
 entityUsernameScheme = {CN}
 entityPasswordScheme = {random}
 
-# Config for the OpenSSL backend. Only for use in preproduction environments!
-[openssl]
-# Paths to the root certificate and unencrypted private key to use for signing.
-# For convenience, a self-signed CA is created if these files do not exist.
-cacert = /tmp/ca.crt
-cakey = /tmp/ca.key
-
-# Config for the certbot backend.
-[certbot]
-
-# Path to the certbot executable/script, by default uses /usr/bin/certbot
-# If your installation of certbot is in a different location, specify it here.
-#path = /usr/bin/certbot
-
-# Configuration to provide to certbot as it's config file. This example
-# configures certbot to use cloudflare's DNS (assumes credential file exists).
-# Note that certbot config must be indented when spanning multiple lines.
-config =
-    preferred-challenges=dns
-    dns-cloudflare
-    dns-cloudflare-credentials=/etc/serles/cloudflare.ini
-    # certbot attempts to write to these paths; overwrite if not running as root:
-    #config-dir=/etc/letsencrypt
-    #work-dir=/var/lib/letsencrypt
-    #logs-dir=/var/log/letsencrypt
-
-# Alternatively to `config`, an external config file can be referenced directly:
-#config-file = /etc/serles/certbot-cli.ini

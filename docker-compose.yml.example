@@ -1,0 +1,20 @@
+services:  
+  serles-acme:
+    image: serles-acme:3.12
+    environment:
+      - EJBCA_URL=https://[ejbca_host]/ejbca/ejbcaws/ejbcaws?wsdl
+      - CLIENT_CERT=/etc/serles/[client_cert].pem
+      - CA_BUNDLE=none # choice is default or none. Default uses certifi bundle
+      - CA_NAME=[CA name] # as per EJBCA deployment
+      - CA_ENDENTITYPROFILE=ACMEEndEntityProfile # as per EJBCA deployment
+      - CA_CERTIFICATEPROFILE=ACMEServerProfile # as per EJBCA deployment
+      - ACME_DB=sqlite:////etc/serles/db.sqlite # otherwise mysql+pymysql://user:passwd@localhost/db_acmeproxy
+      - ACME_BE=serles.backends.ejbca:EjbcaBackend
+    ports:
+      - "8080:8000" # 8080 due to portainer
+    volumes:
+      - ./files:/etc/serles:rw # passing ini, config, and pem files here
+    # this section for debug 
+    # command: /bin/bash
+    # stdin_open: true
+    # tty: true
