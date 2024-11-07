@@ -12,6 +12,9 @@ COPY --chown=root:root /app /usr/local/bin/
 # copy template files to /etc/serles
 COPY --chown=root:root /files /etc/serles
 
+# copy updated for DNS-01 files to app; update for Python version
+COPY --chown=root:root /serles /opt/serles_venv/lib/python3.12/site-packages/serles
+
 RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/start.sh
 
 EXPOSE 8000/tcp
